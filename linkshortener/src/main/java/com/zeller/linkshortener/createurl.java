@@ -86,13 +86,22 @@ public class createurl extends HttpServlet {
                     
                     Timestamp s = new Timestamp(System.currentTimeMillis());
                     
-                    urlobj.setURL(url);
-                    urlobj.setShortend(shortend);
                     
-                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, ACCESSEDCOUNT, SHORTEND) VALUES (0, '"+url+"', '"+s.toString()+"', 0, 0, '"+shortend+"')";
+                    
+                    
+                    rs = st.executeQuery("select max(ID) as \"max\" from URLS");
+                    rs.next();
+                    int id = rs.getInt("max") +1;
+                    
+                    
+                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, ACCESSEDCOUNT, SHORTEND) VALUES ("+id+", '"+url+"', '"+s.toString()+"', 0, 0, '"+shortend+"')";
 
                     st.executeUpdate(sql);
                     
+                    urlobj.setURL(url);
+                    urlobj.setShortend(shortend);
+                    urlobj.setID(id);
+                    urlobj.setTimestamp(s);
 
                     out.println(this.gson.toJson(urlobj));
                 } catch (Exception e) {
