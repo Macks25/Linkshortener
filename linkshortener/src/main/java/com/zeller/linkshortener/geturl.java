@@ -13,10 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import com.google.gson.*;
 import objects.urlobj;
-import java.net.URL;
-import java.util.Random;
+
 
 /**
  *
@@ -25,7 +23,7 @@ import java.util.Random;
 @WebServlet(name = "geturl", urlPatterns = {"/r"})
 public class geturl extends HttpServlet {
 
-    private Gson gson = new Gson();
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,7 +36,7 @@ public class geturl extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
 
             response.addHeader("Access-Control-Allow-Origin", "*");
@@ -50,7 +48,6 @@ public class geturl extends HttpServlet {
              Statement st;
              ResultSet rs;
              
-            urlobj urlobj = new urlobj();
 
             
                 
@@ -71,22 +68,62 @@ public class geturl extends HttpServlet {
                     
                     rs = st.executeQuery("SELECT * FROM URLS WHERE SHORTEND = '"+SHORTEND+"'");
                     if(rs.next()){
-                        urlobj.setURL(rs.getString("URL"));
-                        urlobj.setShortend(SHORTEND);
-                    
+                        
+                    String url = rs.getString("URL");
                          st.executeUpdate("UPDATE URLS SET ACCESSEDCOUNT = ACCESSEDCOUNT +1 WHERE SHORTEND='"+SHORTEND+"'");
                     
 
                    
-
-                         out.println(this.gson.toJson(urlobj));
+                        String html="<!DOCTYPE html>\n" +
+                                    "<html lang=\"en\">\n" +
+                                    "<head>\n" +
+                                    "    <meta charset=\"UTF-8\">\n" +
+                                    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                                    "    <title>Redirecting</title>\n" +
+                                    "</head>\n" +
+                                    "<body>\n" +
+                                    "\n" +
+                                    "    loading...\n" +
+                                    "</body>\n" +
+                                    "<script>\n" +
+                                    "    location.href = '"+url+"';\n" +
+                                    "</script>\n" +
+                                    "</html>";
+                        
+                        
+                         out.println(html);
                     }else{
-                        out.println(this.gson.toJson("There is no such url as: "+SHORTEND));
+                        if(SHORTEND == null || SHORTEND == ""){
+                            String html="<!DOCTYPE html>\n" +
+                                    "<html lang=\"en\">\n" +
+                                    "<head>\n" +
+                                    "    <meta charset=\"UTF-8\">\n" +
+                                    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                                    "    <title>Redirecting</title>\n" +
+                                    "</head>\n" +
+                                    "<body>\n" +
+                                    "\n" +
+                                    "    loading...\n" +
+                                    "</body>\n" +
+                                    "<script>\n" +
+                                    "    var urlhost = window.location.host;\n" +
+                                    "    location.href = `http://${urlhost}/linkshortener/index.html`;\n" +
+                                    "</script>\n" +
+                                    "</html>";
+                            
+                            
+                         out.println(html);
+                        }else{
+                            out.println("There is no such url as: "+SHORTEND);
+                        }
+                        
                     }
                     
                 } catch (Exception e) {
                     //response.setStatus(444);
-                    out.println(this.gson.toJson(e));
+                    out.println(e);
                 }
                 
            
