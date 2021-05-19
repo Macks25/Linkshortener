@@ -23,7 +23,7 @@ async function inputfunc(){
     let urlstring = urlinput.value
 
     console.log("Input Function");
-    
+    urlstring.trim();
     if(!(urlstring.startsWith("https://") ||urlstring.startsWith("http://"))){
         urlstring = "http://" + urlstring 
     }

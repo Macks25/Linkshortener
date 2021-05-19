@@ -16,6 +16,7 @@ import java.sql.*;
 import com.google.gson.*;
 import objects.urlobj;
 import java.net.URL;
+import java.util.Random;
 
 /**
  *
@@ -45,22 +46,53 @@ public class createurl extends HttpServlet {
             String url = request.getParameter("url");
             //int userid = Integer.parseInt(request.getParameter("userid"));
 
-            // Connection con;
-            // Statement st;
+            Connection con;
+             Statement st;
+             ResultSet rs;
+             
             urlobj urlobj = new urlobj();
 
             if (isValidURL(url)) {
                 
                 try {
 
-                    /*Class.forName("java.sql.Driver");
-                con = DriverManager.getConnection("jdbc:derby://localhost:1527/linkSQL", "root", "root");
-                st = con.createStatement();
-                String SQL = "";
-                st.executeUpdate(SQL);*/
+                    Class.forName("java.sql.Driver");
+                    con = DriverManager.getConnection("jdbc:derby://localhost:1527/linkSQL", "root", "root");
+                    st = con.createStatement();
+                    
+                    
+                    
+                    String upper ="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    String lower = upper.toLowerCase();
+                    String numbers = "0123456789";
+                    String all = upper + lower + numbers;
+                    
+                    Random random = new Random();
+                    
+                    String shortend = "";
+                    
+                    
+                    do{
+                      for(int i=0; i<6; i++){
+                        
+                        int index = random.nextInt(all.length());
+                        shortend += all.charAt(index);
+                    }  
+                      String sql = "Select SHORTEND from URLS where SHORTEND ='"+shortend+"'";
+                      rs = st.executeQuery(sql);
+                      
+                      
+                    }while(rs.next());
+                    
+                    Timestamp s = new Timestamp(System.currentTimeMillis());
                     
                     urlobj.setURL(url);
-                    //urlobj.setUserid(userid);
+                    urlobj.setShortend(shortend);
+                    
+                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, ACCESSEDCOUNT, SHORTEND) VALUES (0, '"+url+"', '"+s.toString()+"', 0, 0, '"+shortend+"')";
+
+                    st.executeUpdate(sql);
+                    
 
                     out.println(this.gson.toJson(urlobj));
                 } catch (Exception e) {
