@@ -15,7 +15,7 @@ public class urlobj {
     String URL;
     String shortend;
     Timestamp timestamp;
-    int userid;
+
 
 
     public String getURL() {
@@ -42,12 +42,5 @@ public class urlobj {
         this.timestamp = timestamp;
     }
 
-    public int getUserid() {
-        return userid;
-    }
-
-    public void setUserid(int userid) {
-        this.userid = userid;
-    }
 
 }
