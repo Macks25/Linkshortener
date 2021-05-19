@@ -24,6 +24,9 @@ async function inputfunc(){
 
     console.log("Input Function");
     
+    if(!(urlstring.startsWith("https://") ||urlstring.startsWith("http://"))){
+        urlstring = "http://" + urlstring 
+    }
     
     let url = `http://${urlhost}/linkshortener/createurl?url=${encodeURIComponent(urlstring)}`;
   console.log(url);
