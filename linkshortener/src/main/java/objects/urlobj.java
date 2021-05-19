@@ -12,20 +12,11 @@ import java.sql.Timestamp;
  * @author zelle
  */
 public class urlobj {
-    int ID;
     String URL;
     String shortend;
     Timestamp timestamp;
     int userid;
-    int accessedcount;
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 
     public String getURL() {
         return URL;
@@ -59,11 +50,4 @@ public class urlobj {
         this.userid = userid;
     }
 
-    public int getAccessedcount() {
-        return accessedcount;
-    }
-
-    public void setAccessedcount(int accessedcount) {
-        this.accessedcount = accessedcount;
-    }
 }

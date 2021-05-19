@@ -22,8 +22,8 @@ import java.util.Random;
  *
  * @author zelle
  */
-@WebServlet(name = "createurl", urlPatterns = {"/createurl"})
-public class createurl extends HttpServlet {
+@WebServlet(name = "geturl", urlPatterns = {"/r"})
+public class geturl extends HttpServlet {
 
     private Gson gson = new Gson();
 
@@ -43,7 +43,7 @@ public class createurl extends HttpServlet {
 
             response.addHeader("Access-Control-Allow-Origin", "*");
 
-            String url = request.getParameter("url");
+            String SHORTEND = request.getParameter("q");
             //int userid = Integer.parseInt(request.getParameter("userid"));
 
             Connection con;
@@ -52,7 +52,7 @@ public class createurl extends HttpServlet {
              
             urlobj urlobj = new urlobj();
 
-            if (isValidURL(url)) {
+            
                 
                 try {
 
@@ -62,67 +62,39 @@ public class createurl extends HttpServlet {
                     
                     
                     
-                    String upper ="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    String lower = upper.toLowerCase();
-                    String numbers = "0123456789";
-                    String all = upper + lower + numbers;
-                    
-                    Random random = new Random();
-                    
-                    String shortend = "";
-                    
-                    
-                    do{
-                      for(int i=0; i<6; i++){
-                        
-                        int index = random.nextInt(all.length());
-                        shortend += all.charAt(index);
-                    }  
-                      String sql = "Select SHORTEND from URLS where SHORTEND ='"+shortend+"'";
-                      rs = st.executeQuery(sql);
-                      
-                      
-                    }while(rs.next());
-                    
-                    Timestamp s = new Timestamp(System.currentTimeMillis());
                     
                     
                     
                     
-                    rs = st.executeQuery("select max(ID) as \"max\" from URLS");
-                    rs.next();
-                    int id = rs.getInt("max") +1;
                     
                     
-                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, ACCESSEDCOUNT, SHORTEND) VALUES ("+id+", '"+url+"', '"+s.toString()+"', 0, 0, '"+shortend+"')";
+                    
+                    rs = st.executeQuery("SELECT * FROM URLS WHERE SHORTEND = '"+SHORTEND+"'");
+                    if(rs.next()){
+                        urlobj.setURL(rs.getString("URL"));
+                        urlobj.setShortend(SHORTEND);
+                    
+                         st.executeUpdate("UPDATE URLS SET ACCESSEDCOUNT = ACCESSEDCOUNT +1 WHERE SHORTEND='"+SHORTEND+"'");
+                    
 
-                    st.executeUpdate(sql);
-                    
-                    urlobj.setURL(url);
-                    urlobj.setShortend(shortend);
-                    urlobj.setTimestamp(s);
+                   
 
-                    out.println(this.gson.toJson(urlobj));
+                         out.println(this.gson.toJson(urlobj));
+                    }else{
+                        out.println(this.gson.toJson("There is no such url as: "+SHORTEND));
+                    }
+                    
                 } catch (Exception e) {
                     //response.setStatus(444);
                     out.println(this.gson.toJson(e));
                 }
                 
-            } else {
-                out.println(this.gson.toJson("E1")); //Non vallid URL or wrong URL syntax
-            }
+           
 
         }
     }
 
-    public static boolean isValidURL(String urlstring) {
-        try {
-            new URL(urlstring).toURI();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
