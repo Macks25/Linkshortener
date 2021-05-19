@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import com.google.gson.*;
+import objects.URL;
 
 
 /**
@@ -49,21 +50,25 @@ public class createurl extends HttpServlet {
             Connection con;
             Statement st;
             
-
+            URL urlobj = new URL();
             
+
 
             try {
 
-                Class.forName("java.sql.Driver");
-                con = DriverManager.getConnection("jdbc:derby://localhost:1527/hellodb", "test", "root");
+                /*Class.forName("java.sql.Driver");
+                con = DriverManager.getConnection("jdbc:derby://localhost:1527/linkSQL", "root", "root");
                 st = con.createStatement();
                 String SQL = "";
+                st.executeUpdate(SQL);*/
                 
-                st.executeUpdate(SQL);
+                urlobj.setURL(url);
+                urlobj.setUserid(userid);
                 
+                out.println(this.gson.toJson(urlobj));
             } catch (Exception e) {
                 //response.setStatus(444);
-                out.println(this.gson.toJson("ERROR!"));
+                out.println(this.gson.toJson(e));
             }
 
         }
