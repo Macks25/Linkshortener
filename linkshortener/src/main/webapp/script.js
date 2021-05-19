@@ -31,9 +31,19 @@ async function inputfunc(){
     let url = `http://${urlhost}/linkshortener/createurl?url=${encodeURIComponent(urlstring)}`;
   console.log(url);
 
-  let temp = await fetch(url)
+  let data = await fetch(url)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
+      return data
     });
+
+    if(data!= undefined){
+        let output = document.getElementById("output")
+        let url = `http://${urlhost}/linkshortener/r?q=${data.shortend}`
+        output.innerHTML = `<a href="${url}">${url}</a>`
+    }else{
+        console.error("ERROR");
+    }
+
 }
