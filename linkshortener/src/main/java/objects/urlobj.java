@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  *
  * @author zelle
  */
-public class URL {
+public class urlobj {
     int ID;
     String URL;
     String shortend;

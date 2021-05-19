@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import com.google.gson.*;
-import objects.URL;
-
+import objects.urlobj;
+import java.net.URL;
 
 /**
  *
@@ -40,37 +40,47 @@ public class createurl extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
 
-            
             response.addHeader("Access-Control-Allow-Origin", "*");
 
             String url = request.getParameter("url");
-            int userid = Integer.parseInt(request.getParameter("userid"));
-            
+            //int userid = Integer.parseInt(request.getParameter("userid"));
 
-            Connection con;
-            Statement st;
-            
-            URL urlobj = new URL();
-            
+            // Connection con;
+            // Statement st;
+            urlobj urlobj = new urlobj();
 
+            if (isValidURL(url)) {
+                
+                try {
 
-            try {
-
-                /*Class.forName("java.sql.Driver");
+                    /*Class.forName("java.sql.Driver");
                 con = DriverManager.getConnection("jdbc:derby://localhost:1527/linkSQL", "root", "root");
                 st = con.createStatement();
                 String SQL = "";
                 st.executeUpdate(SQL);*/
+                    
+                    urlobj.setURL(url);
+                    //urlobj.setUserid(userid);
+
+                    out.println(this.gson.toJson(urlobj));
+                } catch (Exception e) {
+                    //response.setStatus(444);
+                    out.println(this.gson.toJson(e));
+                }
                 
-                urlobj.setURL(url);
-                urlobj.setUserid(userid);
-                
-                out.println(this.gson.toJson(urlobj));
-            } catch (Exception e) {
-                //response.setStatus(444);
-                out.println(this.gson.toJson(e));
+            } else {
+                out.println(this.gson.toJson("E1")); //Non vallid URL or wrong URL syntax
             }
 
+        }
+    }
+
+    public static boolean isValidURL(String urlstring) {
+        try {
+            new URL(urlstring).toURI();
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
