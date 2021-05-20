@@ -69,12 +69,25 @@ public class geturl extends HttpServlet {
                     
                     rs = st.executeQuery("SELECT * FROM URLS WHERE SHORTEND = '"+SHORTEND+"'");
                     if(rs.next()){
+                      
                         
-                    String url = rs.getString("URL");
-                         st.executeUpdate("UPDATE URLS SET ACCESSEDCOUNT = ACCESSEDCOUNT +1 WHERE SHORTEND='"+SHORTEND+"'");
+                        int id = rs.getInt("ID");
+                        String url = rs.getString("URL");
+                        
+                        
+                         
+                         
+                         Timestamp s = new Timestamp(System.currentTimeMillis());
+                         
+                         String ipAddress = request.getHeader("X-FORWARDED-FOR");  
+                            if (ipAddress == null) {  
+                            ipAddress = request.getRemoteAddr();  
+                        }
+                            
+                         st.executeUpdate("INSERT INTO ROOT.ACCESS (URLID, TIME, IP) VALUES ("+id+", '"+s.toString()+"','"+ipAddress+"')");
                     
-
-                   
+                         
+                         
                         String html="<!DOCTYPE html>\n" +
                                     "<html lang=\"en\">\n" +
                                     "<head>\n" +

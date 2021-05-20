@@ -94,7 +94,7 @@ public class createurl extends HttpServlet {
                     int id = rs.getInt("max") +1;
                     
                     
-                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, ACCESSEDCOUNT, SHORTEND) VALUES ("+id+", '"+url+"', '"+s.toString()+"', 0, 0, '"+shortend+"')";
+                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, SHORTEND) VALUES ("+id+", '"+url+"', '"+s.toString()+"',  0, '"+shortend+"')";
 
                     st.executeUpdate(sql);
                     
