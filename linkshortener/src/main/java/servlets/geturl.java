@@ -41,7 +41,8 @@ public class geturl extends HttpServlet {
 
             response.addHeader("Access-Control-Allow-Origin", "*");
 
-            String SHORTEND = request.getParameter("q");
+            String SHORTEND = request.getQueryString();
+            System.out.println(SHORTEND);
             //int userid = Integer.parseInt(request.getParameter("userid"));
 
             Connection con;
