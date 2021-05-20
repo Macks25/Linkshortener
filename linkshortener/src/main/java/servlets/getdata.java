@@ -16,14 +16,16 @@ import java.sql.*;
 import com.google.gson.*;
 import objects.urlobj;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
+import objects.dataclass;
 
 /**
  *
  * @author zelle
  */
-@WebServlet(name = "createurl", urlPatterns = {"/createurl"})
-public class createurl extends HttpServlet {
+@WebServlet(name = "getdata", urlPatterns = {"/getdata"})
+public class getdata extends HttpServlet {
 
     private Gson gson = new Gson();
 
@@ -43,16 +45,15 @@ public class createurl extends HttpServlet {
 
             response.addHeader("Access-Control-Allow-Origin", "*");
 
-            String url = request.getParameter("url");
-            //int userid = Integer.parseInt(request.getParameter("userid"));
+            String shortnd = request.getParameter("shortnd");
+            int pass = Integer.parseInt(request.getParameter("pass"));
 
             Connection con;
              Statement st;
              ResultSet rs;
              
-            urlobj urlobj = new urlobj();
+            
 
-            if (isValidURL(url)) {
                 
                 try {
 
@@ -62,72 +63,50 @@ public class createurl extends HttpServlet {
                     
                     
                     
-                    String upper ="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    String lower = upper.toLowerCase();
-                    String numbers = "0123456789";
-                    String all = upper + lower + numbers;
+                    rs = st.executeQuery("Select * from urls where shortend = '"+shortnd+"' and pass="+pass);
                     
-                    Random random = new Random();
-                    
-                    String shortend = "";
-                    
-                    
-                    do{
-                      for(int i=0; i<6; i++){
+                    if(rs.next()){
+                        int id = rs.getInt("ID");
+                        Timestamp s = rs.getTimestamp("TIMESTAMP");
+                        String url = rs.getString("URL");  
                         
-                        int index = random.nextInt(all.length());
-                        shortend += all.charAt(index);
-                    }  
-                      String sql = "Select SHORTEND from URLS where SHORTEND ='"+shortend+"'";
-                      rs = st.executeQuery(sql);
-                      
-                      
-                    }while(rs.next());
+                        rs = st.executeQuery("Select * from ACCESS where URLID =" + id);
+                        
+                        
+                        
+                        if(rs.next()){
+                            ArrayList<dataclass> data = new ArrayList<dataclass>();
+                          do{
+                            
+                            dataclass dataclass = new dataclass();
+                            dataclass.setDataclass(rs.getTimestamp("TIME"));
+                            
+                            data.add(dataclass);
+                        }while(rs.next());
+                        
+                        out.print(this.gson.toJson(data));  
+                        }else{
+                            out.print(this.gson.toJson("No Data"));
+                        }
+                        
+                    }else{
+                        
+                    }
                     
-                    Timestamp s = new Timestamp(System.currentTimeMillis());
                     
                     
-                    
-                    
-                    rs = st.executeQuery("select max(ID) as \"max\" from URLS");
-                    rs.next();
-                    int id = rs.getInt("max") +1;
-                    int pass = random.nextInt(9999);
-                    
-                    
-                    String sql = "INSERT INTO URLS (ID, URL, TIMESTAMP, USERID, SHORTEND, PASS) VALUES ("+id+", '"+url+"', '"+s.toString()+"',  0, '"+shortend+"', "+pass+")";
 
-                    st.executeUpdate(sql);
-                    
-                    
-                    
-                    urlobj.setPass(pass);
-                    urlobj.setURL(url);
-                    urlobj.setShortend(shortend);
-                    urlobj.setTimestamp(s);
-
-                    out.println(this.gson.toJson(urlobj));
                 } catch (Exception e) {
                     //response.setStatus(444);
                     out.println(this.gson.toJson(e));
-                    System.out.println(e);
                 }
                 
-            } else {
-                out.println(this.gson.toJson("Error1")); //Non vallid URL or wrong URL syntax
-            }
+            
 
         }
     }
 
-    public static boolean isValidURL(String urlstring) {
-        try {
-            new URL(urlstring).toURI();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

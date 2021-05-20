@@ -15,8 +15,15 @@ public class urlobj {
     String URL;
     String shortend;
     Timestamp timestamp;
+    int pass;
 
+    public int getPass() {
+        return pass;
+    }
 
+    public void setPass(int pass) {
+        this.pass = pass;
+    }
 
     public String getURL() {
         return URL;

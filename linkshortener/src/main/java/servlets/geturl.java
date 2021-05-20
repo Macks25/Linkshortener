@@ -98,7 +98,7 @@ public class geturl extends HttpServlet {
                                     "</head>\n" +
                                     "<body>\n" +
                                     "\n" +
-                                    "    loading...\n" +
+                                    "    loading... \n" +
                                     "</body>\n" +
                                     "<script>\n" +
                                     "    location.href = '"+url+"';\n" +
