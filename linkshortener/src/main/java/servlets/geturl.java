@@ -97,22 +97,77 @@ public class geturl extends HttpServlet {
                     }else{
                         if(SHORTEND == null || SHORTEND == ""){
                             String html="<!DOCTYPE html>\n" +
-                                    "<html lang=\"en\">\n" +
-                                    "<head>\n" +
-                                    "    <meta charset=\"UTF-8\">\n" +
-                                    "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-                                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                                    "    <title>Redirecting</title>\n" +
-                                    "</head>\n" +
-                                    "<body>\n" +
-                                    "\n" +
-                                    "    loading...\n" +
-                                    "</body>\n" +
-                                    "<script>\n" +
-                                    "    var urlhost = window.location.host;\n" +
-                                    "    location.href = `http://${urlhost}/linkshortener/index.html`;\n" +
-                                    "</script>\n" +
-                                    "</html>";
+                                                "<html lang=\"en\">\n" +
+                                                "<head>\n" +
+                                                "    <meta charset=\"UTF-8\">\n" +
+                                                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                                                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                                                "    <title>Document</title>\n" +
+                                                "</head>\n" +
+                                                "<body>\n" +
+                                                "    <div class=\"main\">\n" +
+                                                "\n" +
+                                                "\n" +
+                                                "        <input type=\"url\" id=\"urlinput\" name=\"url\">\n" +
+                                                "\n" +
+                                                "        <input type=\"button\" id=\"buttonid\" value=\"get shortend url\">\n" +
+                                                "\n" +
+                                                "        <div id=\"output\"></div>\n" +
+                                                "        \n" +
+                                                "    </div>\n" +
+                                                "</body>\n" +
+                                                "<script>\n" +
+                                                "    var urlhost = window.location.host;\n" +
+                                                "var urlinput = document.getElementById(\"urlinput\")\n" +
+                                                "\n" +
+                                                "urlinput.addEventListener(\"keypress\",(e) =>{\n" +
+                                                "\n" +
+                                                "    if(e.key == \"Enter\"){\n" +
+                                                "        console.log(\"Enter\");\n" +
+                                                "        inputfunc()\n" +
+                                                "    }\n" +
+                                                "});\n" +
+                                                "document.getElementById(\"buttonid\").addEventListener(\"click\", (e) => {\n" +
+                                                "    console.log(\"click\");\n" +
+                                                "    inputfunc()\n" +
+                                                "})\n" +
+                                                "\n" +
+                                                "\n" +
+                                                "\n" +
+                                                "\n" +
+                                                "\n" +
+                                                "async function inputfunc(){\n" +
+                                                "\n" +
+                                                "\n" +
+                                                "    let urlstring = urlinput.value\n" +
+                                                "\n" +
+                                                "    console.log(\"Input Function\");\n" +
+                                                "    urlstring.trim();\n" +
+                                                "    if(!(urlstring.startsWith(\"https://\") ||urlstring.startsWith(\"http://\"))){\n" +
+                                                "        urlstring = \"http://\" + urlstring \n" +
+                                                "    }\n" +
+                                                "    \n" +
+                                                "    let url = `http://${urlhost}/linkshortener/createurl?url=${encodeURIComponent(urlstring)}`;\n" +
+                                                "  console.log(url);\n" +
+                                                "\n" +
+                                                "  let data = await fetch(url)\n" +
+                                                "    .then((res) => res.json())\n" +
+                                                "    .then((data) => {\n" +
+                                                "      console.log(data);\n" +
+                                                "      return data\n" +
+                                                "    });\n" +
+                                                "\n" +
+                                                "    if(data!= undefined){\n" +
+                                                "        let output = document.getElementById(\"output\")\n" +
+                                                "        let url = `http://${urlhost}/linkshortener/r?${data.shortend}`\n" +
+                                                "        output.innerHTML = `<a href=\"${url}\">${url}</a>`\n" +
+                                                "    }else{\n" +
+                                                "        console.error(\"ERROR\");\n" +
+                                                "    }\n" +
+                                                "\n" +
+                                                "}\n" +
+                                                "</script>\n" +
+                                                "</html>";
                             
                             
                          out.println(html);
