@@ -12,7 +12,8 @@ import java.sql.Timestamp;
  * @author zelle
  */
 public class dataclass {
-    
+    int seconds;
+    int minute;
     int hour;
     int day;
     int month;
@@ -39,6 +40,9 @@ public class dataclass {
         day = s.getDate();
         month = s.getMonth() +1;
         year = s.getYear() +1900;  
+        minute = s.getMinutes();
+        seconds = s.getSeconds();
+        
     }
     
 }
