@@ -25,10 +25,9 @@ var Chartminute = ""
 
 
 setchar()
-setminute(false,0)
+setminute()
 
 
-var arbeitet = false
 var range = document.getElementById("range")
 range.addEventListener("input", function(){
 
@@ -76,7 +75,6 @@ var myChart = new Chart(ctx.getContext('2d'), {
             }
         },
         onClick: (e) => {
-          console.log(e);
             const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
           console.log(canvasPosition);
             // Substitute the appropriate scale IDs
@@ -93,23 +91,13 @@ var myChart = new Chart(ctx.getContext('2d'), {
 
 async function clickfordata(value){
 
-console.log(arbeitet);
-if(!arbeitet){
-  
-  arbeitet = true
-  await setminute(true,value)
-  arbeitet = false
+updatedatainchart(value)
 }
-}
-async function setminute(isnurstunde,hour){
+async function setminute(){
 
 
-  try {
-    Chartminute.destroy()
-  } catch (e) {
-    console.warn(e);
-  }
-  var array = new Array(60).fill(0)
+
+var array = new Array(60).fill(0)
   
 data = await getdata("rQyjhn", 7324)
 
@@ -119,9 +107,7 @@ console.log(data);
 
 data.forEach(e => {
   console.log(e);
-  if(!isnurstunde || e.hour == hour){
     array[e.minute] = array[e.minute] +1
-  }
   
 })
 
@@ -134,7 +120,7 @@ Chartminute = new Chart(ctx.getContext('2d'), {
     data: {
         labels: Array.from(Array(60).keys()),
         datasets: [{
-            label: isnurstunde? `Aufrufe pro Minute in der Stunde ${hour}` : `Aufrufe pro Minute`,
+            label: `Aufrufe pro Minute`,
             data: array,
             backgroundColor: ['rgba(255, 99, 132, 0.2)'],
             borderColor: ['rgba(255, 99, 132, 1)'],
@@ -152,6 +138,33 @@ Chartminute = new Chart(ctx.getContext('2d'), {
 
 }
 
+
+async function updatedatainchart(hour){
+
+  var array = new Array(60).fill(0)
+  
+  data = await getdata("rQyjhn", 7324)
+  
+  console.log(data);
+  
+  
+  
+  data.forEach(e => {
+    if(e.hour == hour){
+      array[e.minute] = array[e.minute] +1
+    }
+    
+  })
+ 
+  Chartminute.data.datasets[0].data  = array 
+  Chartminute.data.datasets[0].label  = `Aufrufe pro Minute in der ${hour}. Stunde` 
+  
+
+  Chartminute.update();
+
+
+
+}
 
 
 
