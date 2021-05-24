@@ -11,6 +11,8 @@
 </head>
 <body>
   <input class="range" id="range" type="range" min="0" max="23" step="1"/>
+  <input type="date" name="" id="datepicker">
+  <input type="month" name="" id="">
   <canvas id="myChart" ></canvas>
   <canvas id="myChartinhour" ></canvas>
 </body>
@@ -34,6 +36,15 @@ range.addEventListener("input", function(){
 let value = range.value 
 clickfordata(value)
 
+})
+
+var datepicker = document.getElementById("datepicker")
+datepicker.addEventListener("input", (e) => {
+  
+
+  const date1 = new Date(datepicker.valueAsDate)
+
+  console.log(date1.getFullYear());
 })
 
 
@@ -178,6 +189,30 @@ async function getdata(shortnd,pass){
   })
 }
 
+
+async function getyear(ismax){
+  data = await getdata("rQyjhn", 7324)
+  let max
+
+  if(ismax){
+    max = 0
+    data.forEach(e => {
+    if(e.year > max){
+      max = e.year
+    }
+  })
+  }else{
+     max = data[0].year
+    data.forEach(e => {
+    if(e.year < max){
+      max = e.year
+    }
+  })
+  }
+  
+  console.log(max);
+  return max;
+}
 
 
 
