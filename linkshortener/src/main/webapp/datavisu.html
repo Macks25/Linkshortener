@@ -23,7 +23,7 @@ var urlhost = window.location.host; //Get richtige URL für die fetches mit port
 var data;
 
 var Chartminute = ""
-
+var myChart = ""
 
 
 setchar()
@@ -43,8 +43,8 @@ datepicker.addEventListener("input", (e) => {
   
 
   const date1 = new Date(datepicker.valueAsDate)
-
-  console.log(date1.getFullYear());
+  console.log(date1);
+  updatedatechart(date1.getDate())
 })
 
 
@@ -67,7 +67,7 @@ console.log(array);
 
 var ctx = document.getElementById('myChart');
 ctx.innerHTML = ""
-var myChart = new Chart(ctx.getContext('2d'), {
+myChart = new Chart(ctx.getContext('2d'), {
     type: 'bar',
     data: {
         labels: Array.from(Array(24).keys()),
@@ -172,6 +172,33 @@ async function updatedatainchart(hour){
   
 
   Chartminute.update();
+
+
+
+}
+
+async function updatedatechart(day){
+
+var array = new Array(24).fill(0)
+
+data = await getdata("rQyjhn", 7324)
+
+console.log(data);
+
+
+
+data.forEach(e => {
+  if(e.day == day){
+    array[e.hour] = array[e.hour] +1
+  }
+  
+})
+
+myChart.data.datasets[0].data  = array 
+myChart.data.datasets[0].label  = `Aufrufe pro Stunde am ${day}. Tag` 
+
+
+myChart.update();
 
 
 
