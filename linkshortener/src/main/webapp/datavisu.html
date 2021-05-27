@@ -12,7 +12,9 @@
 <body>
   <input class="range" id="range" type="range" min="0" max="23" step="1"/>
   <input type="date" name="" id="datepicker">
-  <input type="month" name="" id="">
+  <input type="text"id="shortnd">
+  <input type="text"id="pass">
+  <input type="button" value="data upgraide" id="datau">
   <canvas id="myChart" ></canvas>
   <canvas id="myChartinhour" ></canvas>
 </body>
@@ -22,12 +24,35 @@ var urlhost = window.location.host; //Get richtige URL für die fetches mit port
 
 var data;
 
+var shortnd;
+var pass;
+var created = false
 var Chartminute = ""
 var myChart = ""
 
 
-setchar()
+
+
+
+var datau = document.getElementById("datau")
+
+datau.addEventListener("click", (e) => {
+
+  pass = document.getElementById("pass").value
+  shortnd = document.getElementById("shortnd").value
+  if(created){
+    Chartminute.destroy()
+    myChart.destroy()
+  }
+  setchar()
 setminute()
+
+})
+
+
+
+
+
 
 
 var range = document.getElementById("range")
@@ -50,9 +75,11 @@ datepicker.addEventListener("input", (e) => {
 
 
 async function setchar(){
+
+  created = true
   var array = new Array(24).fill(0)
 
-data = await getdata("rQyjhn", 7324)
+data = await getdata(shortnd, pass)
 
 console.log(data);
 
@@ -110,7 +137,7 @@ async function setminute(){
 
 var array = new Array(60).fill(0)
   
-data = await getdata("rQyjhn", 7324)
+data = await getdata(shortnd, pass)
 
 console.log(data);
 
@@ -154,7 +181,7 @@ async function updatedatainchart(hour){
 
   var array = new Array(60).fill(0)
   
-  data = await getdata("rQyjhn", 7324)
+  data = await getdata(shortnd, pass)
   
   console.log(data);
   
@@ -181,7 +208,7 @@ async function updatedatechart(day){
 
 var array = new Array(24).fill(0)
 
-data = await getdata("rQyjhn", 7324)
+data = await getdata(shortnd, pass)
 
 console.log(data);
 
@@ -209,16 +236,22 @@ myChart.update();
 async function getdata(shortnd,pass){
 
   let url = `http://${urlhost}/linkshortener/getdata?shortnd=${shortnd}&pass=${pass}`
-  return  fetch(url)
+  let data = await  fetch(url)
   .then((res) => res.json())
   .then((data) =>{
     return data;
   })
+
+  if(data != undefined || data != null || data != ""){
+    return data
+  }else{
+    console.error("ERROR PASS OR SHORTEND WRONG");
+  }
 }
 
 
 async function getyear(ismax){
-  data = await getdata("rQyjhn", 7324)
+  data = await getdata(shortnd, pass)
   let max
 
   if(ismax){
