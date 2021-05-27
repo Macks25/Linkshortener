@@ -15,6 +15,7 @@
         <input type="button" id="buttonid" value="get shortend url">
 
         <div id="output"></div>
+        <div id="pass"></div>
         
     </div>
 </body>
@@ -60,9 +61,11 @@ async function inputfunc(){
     });
 
     if(data!= undefined){
-        let output = document.getElementById("output")
+    let output = document.getElementById("output")
+    let pass = document.getElementById("pass")
         let url = `http://${urlhost}/linkshortener/r?${data.shortend}`
         output.innerHTML = `<a href="${url}">${url}</a>`
+        pass.innerHTML = `Password for usage of link: ${data.pass}`
     }else{
         console.error("ERROR");
     }
